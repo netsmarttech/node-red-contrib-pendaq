@@ -1,0 +1,30 @@
+{
+	"pendaq": {
+		"label": {
+			"device": "Device",
+			"mode": "Mode",
+			"name": "Name",
+			"select": "Select a device",
+			"autostart": "Start aquisition on flow deploy",
+			"samples": "# of samples"
+		},
+		"mode": {
+			"values": "Values",
+			"array": "Array",
+			"buffer": "Buffer"
+		},
+		"tip": {
+			"scope": "Check the <a target=\"_new\" href=\"pendaq/scope\">Oscope</a> for live signals"
+		},
+		"status": {
+			"open": "PenDAq device opened: ",
+			"start": "PenDAq device started: ",
+			"stop": "PenDAq device stopped: ",
+			"close": "PenDAq device closed: "
+		},
+		"error": {
+			"devicenotfound": "Configured device not found",
+			"modeunknown": "Output mode unknown"
+		}
+	}
+}

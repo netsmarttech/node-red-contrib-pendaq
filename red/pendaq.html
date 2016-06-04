@@ -1,0 +1,113 @@
+<!--
+  Copyright 2013, 2016 IBM Corp.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="pendaq">
+    <div class="form-row">
+        <label for="node-input-device"><i class="fa fa-bolt"></i> <span data-i18n="pendaq.label.device"></span></label>
+		<select type="text" id="node-input-device">
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-mode"><i class="fa fa-sliders"></i> <span data-i18n="pendaq.label.mode"></span></label>
+		<select type="text" id="node-input-mode">
+           <option value="values" data-i18n="pendaq.mode.values"></option>
+           <option value="array" data-i18n="pendaq.mode.array"></option>
+           <option value="buffer" data-i18n="pendaq.mode.buffer"></option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="pendaq.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]pendaq.label.name">
+    </div>
+    <div class="form-row">
+        <label>&nbsp;</label>
+        <input type="checkbox" id="node-input-autostart" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-autostart" style="width:70%;"><span data-i18n="pendaq.label.autostart"></span></label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-samples"><i class="fa fa-random"></i> <span data-i18n="pendaq.label.samples"></span></label>
+        <input id="node-input-samples" style="width: 60px;" value="0">
+    </div>
+	<div class="form-tips"><span data-i18n="[html]pendaq.tip.scope"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="pendaq">
+    <p>Acquires samples from a PenDAq device</p>
+    <p>Three modes of operation are allowed:</p>
+    <ul>
+       <li><b>Values:</b> each acquisition channel will be assigned to a separate output</li>
+       <li><b>Array:</b> on each acquisition, a single message with <code>msg.payload</code> being an array with the acquired values</li>
+       <li><b>Buffer:</b> the raw device acquired buffer, including checksum</li>
+    </ul>
+	<p>If start of aquisition on flow display is checked, the start of aquisition is started when the flow is deployed. Else, the aquisition will start only with a message with a <code>msg.payload</code> that evaluates to true</p>
+	<p>A parameter <code>msg.samples</code> in the input message can set the number of samples that will be acquired before stopping. It falls back to the node's configuration if the parameter is not present in the message. A value of 0 (zero) means no limit</p>
+	<p><b>Tip:</b>Check the <a target="_new" href="pendaq/scope">Oscope</a> for live signals</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('pendaq',{
+        category: 'input',
+        defaults: {
+            device: {value:"", required:true},
+            mode: {value:"values"},
+			outputs: {value: 4},
+            name: {value:""},
+            autostart: {value: true},
+            samples: {value: 0}
+        },
+        color:"#87A980",
+        inputs: 1,
+        outputs: 4,
+        icon: "serial.png",
+        label: function() {
+            return this.name || "PenDAq";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+			var self = this;
+			$.getJSON('pendaq/list', function (data) {
+				var deviceList = $('#node-input-device');
+
+				$('#node-input-device option').remove();
+
+				deviceList.append($('<option/>', { 
+					disabled: "disabled",
+					selected: "selected",
+					style: "display:none;",
+					text : self._("pendaq.label.select")
+				}));
+			
+				$.each(data, function (i, val) {  //TODO! change to serial number!
+					deviceList.append($('<option/>', { 
+						value: val,
+						text : "PenDAq '" + val + "'"
+					}));
+				});
+				
+				if(data.indexOf(this.device) >= 0) {
+					deviceList.val(this.device);
+				}
+			}); 
+			
+				
+			$( "#node-input-samples" ).spinner({
+				min:0
+			});
+		},
+		oneditsave: function() {
+			this.outputs = $("#node-input-mode").val() == "values" ? 4 : 1;
+		}
+    });
+</script>
