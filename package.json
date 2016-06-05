@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-pendaq",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A Node-RED interface to Smart-Tech's PenDAq(r)",
   "main": "src/index.js",
   "dependencies": {

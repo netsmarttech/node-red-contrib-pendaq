@@ -5,6 +5,7 @@
 			"mode": "Mode",
 			"name": "Name",
 			"select": "Select a device",
+			"nodevice": "No devices available",
 			"autostart": "Start aquisition on flow deploy",
 			"samples": "# of samples"
 		},
@@ -24,7 +25,8 @@
 		},
 		"error": {
 			"devicenotfound": "Configured device not found",
-			"modeunknown": "Output mode unknown"
+			"modeunknown": "Output mode unknown",
+			"usberror": "USB error"
 		}
 	}
 }

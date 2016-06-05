@@ -32,11 +32,17 @@ module.exports = function(RED) {
 			return;
 		}
 		
+		function handleLibError(err) {
+			node.error(RED._("pendaq.error.usberror"));
+		}
+		node._dev.on('error', handleLibError);
+		
 		node.on("close", function(done) {
 			node._dev.close(done);
 			node._dev.removeListener('data', onDataValues);
 			node._dev.removeListener('data', onDataArray);
 			node._dev.removeListener('rawdata', onRawData);
+			node._dev.removeListener('error', handleLibError);
 			if (RED.settings.verbose) { node.log(RED._("pendaq.status.close") + config.device); }
 		});
 		

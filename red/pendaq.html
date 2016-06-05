@@ -16,6 +16,7 @@
         <label for="node-input-device"><i class="fa fa-bolt"></i> <span data-i18n="pendaq.label.device"></span></label>
 		<select type="text" id="node-input-device">
         </select>
+		<button id="device-list-update"><i class="fa fa-refresh"></i></button>
     </div>
     <div class="form-row">
         <label for="node-input-mode"><i class="fa fa-sliders"></i> <span data-i18n="pendaq.label.mode"></span></label>
@@ -49,7 +50,7 @@
        <li><b>Array:</b> on each acquisition, a single message with <code>msg.payload</code> being an array with the acquired values</li>
        <li><b>Buffer:</b> the raw device acquired buffer, including checksum</li>
     </ul>
-	<p>If start of aquisition on flow display is checked, the start of aquisition is started when the flow is deployed. Else, the aquisition will start only with a message with a <code>msg.payload</code> that evaluates to true</p>
+	<p>If <i>start of aquisition on flow deploy</i> is checked, the data aquisition is started when as soon as the flow is deployed. Otherwise, the aquisition will start only with a message with a <code>msg.payload</code> that evaluates to true. The acuquisition can be paused if the payload evaluates to false.</p>
 	<p>A parameter <code>msg.samples</code> in the input message can set the number of samples that will be acquired before stopping. It falls back to the node's configuration if the parameter is not present in the message. A value of 0 (zero) means no limit</p>
 	<p><b>Tip:</b>Check the <a target="_new" href="pendaq/scope">Oscope</a> for live signals</p>
 </script>
@@ -77,37 +78,43 @@
         },
 		oneditprepare: function() {
 			var self = this;
-			$.getJSON('pendaq/list', function (data) {
-				var deviceList = $('#node-input-device');
-
-				$('#node-input-device option').remove();
-
-				deviceList.append($('<option/>', { 
-					disabled: "disabled",
-					selected: "selected",
-					style: "display:none;",
-					text : self._("pendaq.label.select")
-				}));
 			
-				$.each(data, function (i, val) {  //TODO! change to serial number!
+			function updateDeviceList() {
+				$.getJSON('pendaq/list', function (data) {
+					var deviceList = $('#node-input-device');
+
+					$('#node-input-device option').remove();
+
 					deviceList.append($('<option/>', { 
-						value: val,
-						text : "PenDAq '" + val + "'"
+						disabled: "disabled",
+						selected: "selected",
+						style: "display:none;",
+						text : data.length ? self._("pendaq.label.select") : self._("pendaq.label.nodevice")
 					}));
-				});
 				
-				if(data.indexOf(this.device) >= 0) {
-					deviceList.val(this.device);
-				}
-			}); 
+					$.each(data, function (i, val) {  //TODO! change to serial number!
+						deviceList.append($('<option/>', { 
+							value: val,
+							text : "PenDAq '" + val + "'"
+						}));
+					});
+					
+					if(data.indexOf(self.device) >= 0) {
+						deviceList.val(self.device);
+					}
+				}); 
+			}
 			
+			updateDeviceList();
+			$('#device-list-update').on('click', updateDeviceList);
 				
-			$( "#node-input-samples" ).spinner({
+			$("#node-input-samples").spinner({
 				min:0
 			});
 		},
 		oneditsave: function() {
 			this.outputs = $("#node-input-mode").val() == "values" ? 4 : 1;
+			this.device = $('#node-input-device').val() || '';
 		}
     });
 </script>
