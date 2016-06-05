@@ -25,7 +25,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(node,config);
 		
 		node._dev = PenDAq.getDevice(config.device);
-		node._samplesTarget = 0;
+		node._samplesTarget = config.samples;
 		
 		if(!node._dev) {
 			node.error(RED._("pendaq.error.devicenotfound"));
@@ -34,6 +34,9 @@ module.exports = function(RED) {
 		
 		node.on("close", function(done) {
 			node._dev.close(done);
+			node._dev.removeListener('data', onDataValues);
+			node._dev.removeListener('data', onDataArray);
+			node._dev.removeListener('rawdata', onRawData);
 			if (RED.settings.verbose) { node.log(RED._("pendaq.status.close") + config.device); }
 		});
 		
