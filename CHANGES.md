@@ -1,3 +1,9 @@
+Version: 0.1.3
+------------
+- [BUGFIX] Improve error handlinng from underlying that might crash the process
+- [BUGFIX] Device list reload button would reload the entire page
+- Implement node statuses
+
 Version: 0.1.2
 ------------
 - [BUGFIX] Node element on the flow is now marked properly when no device is selected

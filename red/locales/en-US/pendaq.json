@@ -1,32 +1,44 @@
 {
-	"pendaq": {
-		"label": {
-			"device": "Device",
-			"mode": "Mode",
-			"name": "Name",
-			"select": "Select a device",
-			"nodevice": "No devices available",
-			"autostart": "Start aquisition on flow deploy",
-			"samples": "# of samples"
+	"pendaq" : {
+		"label" : {
+			"device" : "Device",
+			"mode" : "Mode",
+			"name" : "Name",
+			"select" : "Select a device",
+			"nodevice" : "No devices available",
+			"autostart" : "Start aquisition on flow deploy",
+			"samples" : "# of samples"
 		},
-		"mode": {
-			"values": "Values",
-			"array": "Array",
-			"buffer": "Buffer"
+		"mode" : {
+			"values" : "Values",
+			"array" : "Array",
+			"buffer" : "Buffer"
 		},
-		"tip": {
-			"scope": "Check the <a target=\"_new\" href=\"pendaq/scope\">Oscope</a> for live signals"
+		"tip" : {
+			"scope" : "Check the <a target=\"_new\" href=\"pendaq/scope\">Oscope</a> for live signals"
 		},
 		"status": {
-			"open": "PenDAq device opened: ",
-			"start": "PenDAq device started: ",
-			"stop": "PenDAq device stopped: ",
-			"close": "PenDAq device closed: "
+			"start": "acquiring",
+			"stop": "paused",
+			"error": "error"
 		},
-		"error": {
-			"devicenotfound": "Configured device not found",
-			"modeunknown": "Output mode unknown",
-			"usberror": "USB error"
+		"log" : {
+			"open" : "PenDAq device opened: ",
+			"start" : "PenDAq device started: ",
+			"stop" : "PenDAq device stopped: ",
+			"close" : "PenDAq device closed: "
+		},
+		"error" : {
+			"devicenotfound" : "Configured device not found",
+			"modeunknown" : "Output mode unknown",
+			"usb" : {
+				"default" : "USB Error: ",
+				"unknown" : "Unknown USB error. Please report a bug",
+				"stall" : "USB trasfer stalled",
+				"nodevice": "USB device not found. Is your device connected?",
+				"io": "Error transferring data. Is your device connected?",
+				"error": "General USB error"
+			}
 		}
 	}
 }

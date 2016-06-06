@@ -28,22 +28,54 @@ module.exports = function(RED) {
 		node._samplesTarget = config.samples;
 		
 		if(!node._dev) {
+			node.status({fill:'red', shape:'dot', text:RED._("pendaq.status.error")});
 			node.error(RED._("pendaq.error.devicenotfound"));
 			return;
 		}
 		
+		node.status({fill:'grey', shape:'dot', text:RED._("pendaq.status.stop")});
+		
 		function handleLibError(err) {
-			node.error(RED._("pendaq.error.usberror"));
+			node.status({fill:'red', shape:'dot', text:RED._("pendaq.status.error")});
+			
+			if(!err) return node.error(RED._("pendaq.error.usb.unknown"));
+			
+			switch(err.message) {
+				case 'LIBUSB_TRANSFER_STALL': return node.error(RED._("pendaq.error.usb.stall"));
+				case 'LIBUSB_TRANSFER_ERROR': return node.error(RED._("pendaq.error.usb.error"));
+				case 'LIBUSB_ERROR_NO_DEVICE': return node.error(RED._("pendaq.error.usb.nodevice"));
+				case 'LIBUSB_ERROR_IO': return node.error(RED._("pendaq.error.usb.io"));
+				default: return node.error(RED._("pendaq.error.usb.default") + err.message);
+			}
 		}
+		
+		function onDeviceStart(){
+			node.status({fill:'green', shape:'dot', text:RED._("pendaq.status.start")});
+		}
+		
+		function onDeviceStop() {
+			node.status({fill:'grey', shape:'dot', text:RED._("pendaq.status.stop")});
+		}
+		
 		node._dev.on('error', handleLibError);
+		node._dev.on('start', onDeviceStart);
+		node._dev.on('stop', onDeviceStop);
+		
 		
 		node.on("close", function(done) {
-			node._dev.close(done);
+			node._dev.close(function() {
+				//remove the error handler only if we closed successfully
+				//TODO - and if we don't, what to do?
+				node._dev.removeListener('error', handleLibError);
+				if (RED.settings.verbose) { node.log(RED._("pendaq.log.close") + config.device); }
+				
+				done();
+			});
+			node._dev.removeListener('start', onDeviceStart);
+			node._dev.removeListener('stop', onDeviceStop);
 			node._dev.removeListener('data', onDataValues);
 			node._dev.removeListener('data', onDataArray);
 			node._dev.removeListener('rawdata', onRawData);
-			node._dev.removeListener('error', handleLibError);
-			if (RED.settings.verbose) { node.log(RED._("pendaq.status.close") + config.device); }
 		});
 		
 		node.on("input", function(msg) {
@@ -67,12 +99,12 @@ module.exports = function(RED) {
 		function startDevice() {
 			node._samplesCount = 0;
 			node._dev.start();
-			if (RED.settings.verbose) { node.log(RED._("pendaq.status.start") + config.device); }
+			if (RED.settings.verbose) { node.log(RED._("pendaq.log.start") + config.device); }
 		}
 		
 		function stopDevice() {
-			node._dev.stop()
-			if (RED.settings.verbose) { node.log(RED._("pendaq.status.stop") + config.device); }
+			node._dev.stop();
+			if (RED.settings.verbose) { node.log(RED._("pendaq.log.stop") + config.device); }
 		}
 		
 		function checkSend(msg) {
@@ -122,7 +154,7 @@ module.exports = function(RED) {
 		}
 		
 		node._dev.open(function() {
-			if (RED.settings.verbose) { node.log(RED._("pendaq.status.open") + config.device); }
+			if (RED.settings.verbose) { node.log(RED._("pendaq.log.open") + config.device); }
 			if(config.autostart) {
 				startDevice();
 			}
