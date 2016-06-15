@@ -1,14 +1,17 @@
 <!--
-  Copyright 2013, 2016 IBM Corp.
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  http://www.apache.org/licenses/LICENSE-2.0
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+   Copyright 2016 Smart-Tech Controle e Automação
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 -->
 
 <script type="text/x-red" data-template-name="pendaq">
@@ -51,7 +54,7 @@
        <li><b>Buffer:</b> the raw device acquired buffer, including checksum</li>
     </ul>
 	<p>If <i>start of aquisition on flow deploy</i> is checked, the data aquisition is started when as soon as the flow is deployed. Otherwise, the aquisition will start only with a message with a <code>msg.payload</code> that evaluates to true. The acuquisition can be paused if the payload evaluates to false.</p>
-	<p>A parameter <code>msg.samples</code> in the input message can set the number of samples that will be acquired before stopping. It falls back to the node's configuration if the parameter is not present in the message. A value of 0 (zero) means no limit</p>
+	<p>A parameter <code>msg.samples</code> in the input message can set the number of samples that will be acquired before stopping. It falls back to the node&apos;s configuration if the parameter is not present in the message. A value of 0 (zero) means no limit</p>
 	<p><b>Tip:</b>Check the <a target="_new" href="pendaq/scope">Oscope</a> for live signals</p>
 </script>
 
@@ -78,36 +81,36 @@
         },
 		oneditprepare: function() {
 			var self = this;
-			
+
 			function updateDeviceList() {
 				$.getJSON('pendaq/list', function (data) {
 					var deviceList = $('#node-input-device');
 
 					$('#node-input-device option').remove();
 
-					deviceList.append($('<option/>', { 
+					deviceList.append($('<option/>', {
 						disabled: "disabled",
 						selected: "selected",
 						style: "display:none;",
 						text : data.length ? self._("pendaq.label.select") : self._("pendaq.label.nodevice")
 					}));
-				
+
 					$.each(data, function (i, val) {  //TODO! change to serial number!
-						deviceList.append($('<option/>', { 
+						deviceList.append($('<option/>', {
 							value: val,
 							text : "PenDAq '" + val + "'"
 						}));
 					});
-					
+
 					if(data.indexOf(self.device) >= 0) {
 						deviceList.val(self.device);
 					}
-				}); 
+				});
 			}
-			
+
 			updateDeviceList();
 			$('#device-list-update').on('click', updateDeviceList);
-				
+
 			$("#node-input-samples").spinner({
 				min:0
 			});
