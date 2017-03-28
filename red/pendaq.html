@@ -42,7 +42,6 @@
         <label for="node-input-samples"><i class="fa fa-random"></i> <span data-i18n="pendaq.label.samples"></span></label>
         <input id="node-input-samples" style="width: 60px;" value="0">
     </div>
-	<div class="form-tips"><span data-i18n="[html]pendaq.tip.scope"></span></div>
 </script>
 
 <script type="text/x-red" data-help-name="pendaq">
@@ -53,9 +52,8 @@
        <li><b>Array:</b> on each acquisition, a single message with <code>msg.payload</code> being an array with the acquired values</li>
        <li><b>Buffer:</b> the raw device acquired buffer, including checksum</li>
     </ul>
-	<p>If <i>start of aquisition on flow deploy</i> is checked, the data aquisition is started when as soon as the flow is deployed. Otherwise, the aquisition will start only with a message with a <code>msg.payload</code> that evaluates to true. The acuquisition can be paused if the payload evaluates to false.</p>
+	<p>If <i>start of aquisition on flow deploy</i> is checked, the data aquisition is started when as soon as the flow is deployed. Otherwise, the aquisition will start only with a message with a <code>msg.payload</code> that evaluates to true. The acquisition can be paused if the payload evaluates to false.</p>
 	<p>A parameter <code>msg.samples</code> in the input message can set the number of samples that will be acquired before stopping. It falls back to the node&apos;s configuration if the parameter is not present in the message. A value of 0 (zero) means no limit</p>
-	<p><b>Tip:</b>Check the <a target="_new" href="pendaq/scope">Oscope</a> for live signals</p>
 </script>
 
 <script type="text/javascript">

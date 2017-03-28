@@ -14,13 +14,11 @@
 			"array" : "Array",
 			"buffer" : "Buffer"
 		},
-		"tip" : {
-			"scope" : "Check the <a target=\"_new\" href=\"pendaq/scope\">Oscope</a> for live signals"
-		},
 		"status": {
 			"start": "acquiring",
 			"stop": "paused",
-			"error": "error"
+			"error": "error",
+			"disconnected": "disconnected"
 		},
 		"log" : {
 			"open" : "PenDAq device opened: ",

@@ -56,11 +56,14 @@ module.exports = function(RED) {
 		function onDeviceStop() {
 			node.status({fill:'grey', shape:'dot', text:RED._("pendaq.status.stop")});
 		}
+		function onDeviceDisconnected() {
+			node.status({fill:'red', shape:'dot', text:RED._("pendaq.status.disconnected")});
+		}
 		
 		node._dev.on('error', handleLibError);
 		node._dev.on('start', onDeviceStart);
 		node._dev.on('stop', onDeviceStop);
-		
+		node._dev.on('disconnected', onDeviceDisconnected);
 		
 		node.on("close", function(done) {
 			node._dev.close(function() {
@@ -73,6 +76,7 @@ module.exports = function(RED) {
 			});
 			node._dev.removeListener('start', onDeviceStart);
 			node._dev.removeListener('stop', onDeviceStop);
+			node._dev.removeListener('disconnected', onDeviceDisconnected);
 			node._dev.removeListener('data', onDataValues);
 			node._dev.removeListener('data', onDataArray);
 			node._dev.removeListener('rawdata', onRawData);
@@ -167,7 +171,7 @@ module.exports = function(RED) {
         res.json(PenDAq.getAvailableDevices()); //TODO change to serial numbers!
     });
 	
-	// --------- Oscope-related ----------
+	/* --------- Oscope-related ----------
 	
 	RED.httpAdmin.get('/pendaq/scope', RED.auth.needsPermission('pendaq.scope'), function(req,res) {
         res.json({
@@ -180,5 +184,5 @@ module.exports = function(RED) {
 			id: req.params.id,
 			info: "TBD!"
 		});
-    });
+    });*/
 };
