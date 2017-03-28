@@ -1,3 +1,9 @@
+Version: 0.1.4
+------------
+- Implement new onDeviceDisconnected event 
+- Fix for some typos
+- Oscope tip removed
+
 Version: 0.1.3
 ------------
 - [BUGFIX] Improve error handlinng from underlying that might crash the process
